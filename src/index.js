@@ -25,8 +25,7 @@ class SmartCalculator {
   }
 
   pow(number) {
-    this.calculatorValue[this.calculatorValue.length - 1][1] = Math.pow(this.calculatorValue[this.calculatorValue.length - 1][1], number);
-    //(this.calculatorValue[this.calculatorValue.length - 1][0] === '^') ? this.calculatorValue[this.calculatorValue.length - 1][1] *= number : this.calculatorValue.push(['^', number]);
+    this.calculatorValue.push(['^', number]);
     return this;
   }
 
@@ -39,23 +38,37 @@ class SmartCalculator {
 
 
 function calculate(mas){
-
+  const mas1 = [];
   const mas2 = [];
   let counter = 0;
 
-  for (let i = 0; i < mas.length; i++){
-    // if (i + 1 < mas.length && mas[i + 1][0] === '^'){
-    //   mas[i][1] = Math.pow(mas[i][1], mas[i + 1][1]);
-    // }
 
-    if (mas[i][0] === '*' || mas[i][0] === '/'){
+  for (let i = mas.length - 1; i >= 0; i--){
+    if (mas[i][0] === '^' && mas[i - 1][0] === '^'){
 
-      (mas[i][0] === '*') ? mas2[mas2.length - 1][1] *= mas[i][1] : mas2[mas2.length - 1][1] /= mas[i][1];
+      mas[i - 1][1] = Math.pow(mas[i - 1][1], mas[i][1]);
+    } else {
+
+      mas1.push(mas[i]);
+    }
+    
+  }
+
+  mas1.reverse();
+
+  for (let i = 0; i < mas1.length; i++){
+    if (i + 1 < mas1.length && mas1[i + 1][0] === '^'){
+      mas1[i][1] = Math.pow(mas1[i][1], mas1[i + 1][1]);
     }
 
-    if (mas[i][0] === '+' || mas[i][0] === '-'){
+    if (mas1[i][0] === '*' || mas1[i][0] === '/'){
 
-      mas2.push(mas[i]);
+      (mas1[i][0] === '*') ? mas2[mas2.length - 1][1] *= mas1[i][1] : mas2[mas2.length - 1][1] /= mas1[i][1];
+    }
+
+    if (mas1[i][0] === '+' || mas1[i][0] === '-'){
+
+      mas2.push(mas1[i]);
     }
 
   }
